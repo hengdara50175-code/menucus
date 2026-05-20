@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RM HENG RESTO - មេនុយម្ហូបបែបឌីជីថល</title>
+    <!-- Tailwind CSS for rich, modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for Hanuman (Khmer) and Inter (English) -->
+    <link href="https://fonts.googleapis.com/css2?family=Hanuman:wght@300;400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', 'Hanuman', sans-serif;
+            background-color: #0d0d0d;
+            color: #f3f4f6;
+        }
+        .khmer-font {
+            font-family: 'Hanuman', sans-serif;
+        }
+        /* Custom scrollbar for better visual integration */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d97706;
+            border-radius: 3px;
+        }
+        .gold-glow {
+            box-shadow: 0 0 15px rgba(217, 119, 6, 0.15);
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col pb-12">
+
+    <nav class="sticky top-0 z-40 bg-[#121212]/95 border-b border-amber-500/20 backdrop-blur px-4 py-3">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <!-- Brand Logo / Name -->
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center text-black font-bold text-lg shadow-lg shadow-amber-500/20">
+                    RM
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-wider text-amber-500 font-serif">RM HENG RESTO</h1>
+                    <p class="text-xs text-gray-400 flex items-center">
+                        <i class="fab fa-whatsapp text-green-500 mr-1"></i> +855 90 878 980
+                    </p>
+                </div>
+            </div>
+
+            <!-- Language and Action Controls -->
+            <div class="flex items-center space-x-2">
+                <!-- Language Switcher Pill -->
+                <div class="flex items-center bg-zinc-900 p-1 rounded-xl border border-zinc-800 mr-1">
+                    <button id="lang-kh-btn" onclick="toggleLanguage('kh')" class="px-2.5 py-1 text-xs font-bold rounded-lg transition duration-200">🇰🇭 KH</button>
+                    <button id="lang-en-btn" onclick="toggleLanguage('en')" class="px-2.5 py-1 text-xs font-bold rounded-lg transition duration-200">🇺🇸 EN</button>
+                </div>
+
+                <!-- Cart Trigger Button -->
+                <button onclick="toggleCart()" class="relative p-2.5 rounded-full bg-zinc-900 border border-zinc-800 text-amber-500 hover:bg-amber-500 hover:text-black transition duration-300">
+                    <i class="fa-solid fa-basket-shopping text-base"></i>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+                </button>
+
+                <!-- Secret Admin Lock Trigger -->
+                <button id="admin-lock-btn" onclick="openAdminModal()" class="p-2.5 rounded-full bg-zinc-900 border border-zinc-800 text-gray-400 hover:text-amber-500 transition duration-300" title="គ្រប់គ្រងមេនុយ">
+                    <i id="lock-icon" class="fa-solid fa-lock text-sm"></i>
+                </button>
+
+                <!-- Admin Status Tag -->
+                <div id="admin-badge" class="hidden flex items-center space-x-1 px-3 py-1 bg-amber-500 text-black text-xs font-bold rounded-full">
+                    <span id="admin-badge-text">ADMIN</span>
+                    <button onclick="logoutAdmin()" class="ml-1 text-red-800 hover:text-red-600"><i class="fa-solid fa-power-off"></i></button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative bg-zinc-950 py-16 px-4 overflow-hidden border-b border-zinc-900 text-center">
+        <div class="absolute inset-0 opacity-10 bg-cover bg-center bg-no-repeat" style="background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=1200');"></div>
+        <div class="relative z-10 max-w-2xl mx-auto">
+            <span id="welcome-text" class="khmer-font text-amber-500 text-sm font-semibold uppercase tracking-widest block mb-2">ស្វាគមន៍មកកាន់</span>
+            <h2 class="text-4xl md:text-5xl font-black text-white mb-4 tracking-wider font-serif">RM HENG RESTO</h2>
+            <div class="w-24 h-1 bg-amber-500 mx-auto my-4 rounded-full"></div>
+            <p id="hero-desc" class="khmer-font text-gray-300 text-sm md:text-base leading-relaxed max-w-lg mx-auto">
+                សូមរីករាយជាមួយជម្រើសមុខម្ហូបដ៏មានឱជារស គុណភាពខ្ពស់ និងអនាម័យ។ លោកអ្នកអាចជ្រើសរើសមុខម្ហូប រួចកម្ម៉ង់តាមរយៈ WhatsApp របស់ហាងយើងខ្ញុំបានភ្លាមៗ!
+            </p>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-6xl w-full mx-auto px-4 py-8">
+        
+        <!-- Admin Controls Panel (Hidden for clients) -->
+        <div id="admin-controls" class="hidden mb-6 p-4 bg-zinc-900/60 border border-amber-500/30 rounded-2xl flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-2">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-ping"></span>
+                <span id="admin-active-badge-text" class="khmer-font text-amber-500 text-sm font-semibold">លោកអ្នកកំពុងប្រើប្រាស់ក្នុងនាមជា Admin (ម្ចាស់ហាង)</span>
+            </div>
+            <button onclick="openFoodFormModal()" class="khmer-font bg-amber-500 hover:bg-amber-600 text-black font-bold px-5 py-2.5 rounded-xl shadow-lg shadow-amber-500/10 flex items-center space-x-2 transition duration-300">
+                <i class="fa-solid fa-plus-circle"></i>
+                <span id="admin-add-new-btn-text">បន្ថែមមុខម្ហូបថ្មី</span>
+            </button>
+        </div>
+
+        <!-- Search and Category Selectors -->
+        <div class="mb-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <!-- Search bar -->
+                <div class="relative w-full md:w-80">
+                    <input type="text" id="search-input" oninput="filterMenu()" placeholder="ស្វែងរកមុខម្ហូប..." class="khmer-font w-full bg-zinc-900 border border-zinc-800 text-gray-200 pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:border-amber-500 transition duration-300">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                </div>
+                
+                <!-- Category Select Slider -->
+                <div class="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-none max-w-full">
+                    <button onclick="setCategory('all')" id="cat-all" class="khmer-font px-5 py-2 bg-amber-500 text-black font-bold text-sm rounded-xl whitespace-nowrap transition duration-300 category-btn">
+                        ទាំងអស់ (All)
+                    </button>
+                    <button onclick="setCategory('food')" id="cat-food" class="khmer-font px-5 py-2 bg-zinc-900 text-gray-400 hover:text-amber-500 font-semibold text-sm rounded-xl whitespace-nowrap transition duration-300 category-btn">
+                        ម្ហូបអាហារ (Foods)
+                    </button>
+                    <button onclick="setCategory('drink')" id="cat-drink" class="khmer-font px-5 py-2 bg-zinc-900 text-gray-400 hover:text-amber-500 font-semibold text-sm rounded-xl whitespace-nowrap transition duration-300 category-btn">
+                        ភេសជ្ជៈ (Drinks)
+                    </button>
+                    <button onclick="setCategory('dessert')" id="cat-dessert" class="khmer-font px-5 py-2 bg-zinc-900 text-gray-400 hover:text-amber-500 font-semibold text-sm rounded-xl whitespace-nowrap transition duration-300 category-btn">
+                        បង្អែម (Desserts)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Food Items Grid - Compact 2 Columns on Mobile, Resizes gracefully -->
+        <div id="food-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            <!-- Dynamic Cards Will Be Loaded Here -->
+        </div>
+
+        <!-- Empty State Container -->
+        <div id="no-items-state" class="hidden text-center py-16">
+            <i class="fa-solid fa-mug-hot text-5xl text-gray-600 mb-4"></i>
+            <h3 id="no-items-text" class="khmer-font text-lg text-gray-400 font-medium">រកមិនឃើញមុខម្ហូបដែលអ្នកស្វែងរកទេ!</h3>
+        </div>
+    </main>
+
+    <!-- Secret Admin Login Modal -->
+    <div id="admin-login-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl gold-glow animate-fade-in">
+            <div class="p-6 text-center">
+                <div class="w-12 h-12 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-lock text-xl"></i>
+                </div>
+                <h3 id="admin-title-text" class="khmer-font text-xl font-bold text-white mb-2">ការគ្រប់គ្រងហាង (Admin Mode)</h3>
+                <p id="admin-desc-text" class="khmer-font text-gray-400 text-xs mb-6">សូមបញ្ចូលលេខកូដសម្ងាត់ (PIN) ដើម្បីបន្ថែម ឬកែសម្រួលមេនុយម្ហូប។</p>
+                
+                <!-- PIN Input -->
+                <div class="mb-6">
+                    <input type="password" id="admin-pin" maxlength="6" placeholder="••••" class="text-center font-mono text-2xl tracking-widest w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500 text-white rounded-xl py-3 outline-none transition duration-300">
+                </div>
+
+                <!-- Modal Actions -->
+                <div class="flex space-x-3">
+                    <button id="admin-cancel-btn" onclick="closeAdminModal()" class="khmer-font flex-1 bg-zinc-800 hover:bg-zinc-700 text-gray-300 font-semibold py-2.5 rounded-xl transition duration-300">
+                        បោះបង់
+                    </button>
+                    <button id="admin-verify-btn" onclick="verifyAdminPIN()" class="khmer-font flex-1 bg-amber-500 hover:bg-amber-600 text-black font-bold py-2.5 rounded-xl transition duration-300">
+                        ផ្ទៀងផ្ទាត់
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Food Item Modal -->
+    <div id="food-form-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm hidden">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl gold-glow flex flex-col max-h-[90vh]">
+            <div class="p-5 border-b border-zinc-800 flex justify-between items-center">
+                <h3 id="form-modal-title" class="khmer-font text-lg font-bold text-amber-500">បន្ថែមមុខម្ហូបថ្មី</h3>
+                <button onclick="closeFoodFormModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto space-y-4">
+                <input type="hidden" id="edit-item-id">
+                
+                <!-- Food Name in Khmer -->
+                <div>
+                    <label id="lbl-name-kh" class="khmer-font block text-xs text-gray-400 mb-1.5">ឈ្មោះមុខម្ហូប (ភាសាខ្មែរ) *</label>
+                    <input type="text" id="food-name-kh" placeholder="ឧ. បាយឆាឡុកឡាក់សាច់គោ" class="khmer-font w-full bg-zinc-950 border border-zinc-800 text-white rounded-xl px-4 py-2.5 outline-none focus:border-amber-500 transition duration-300">
+                </div>
+
+                <!-- Food Name in English -->
+                <div>
+                    <label id="lbl-name-en" class="khmer-font block text-xs text-gray-400 mb-1.5">ឈ្មោះមុខម្ហូប (English) *</label>
+                    <input type="text" id="food-name-en" placeholder="e.g. Beef Lok Lak with Rice" class="w-full bg-zinc-950 border border-zinc-800 text-white rounded-xl px-4 py-2.5 outline-none focus:border-amber-500 transition duration-300">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Price -->
+                    <div>
+                        <label id="lbl-price" class="khmer-font block text-xs text-gray-400 mb-1.5">តម្លៃ ($) *</label>
+                        <input type="number" step="0.01" id="food-price" placeholder="4.50" class="w-full bg-zinc-950 border border-zinc-800 text-white rounded-xl px-4 py-2.5 outline-none focus:border-amber-500 transition duration-300">
+                    </div>
+                    <!-- Category Selection -->
+                    <div>
+                        <label id="lbl-category" class="khmer-font block text-xs text-gray-400 mb-1.5">ប្រភេទម្ហូប *</label>
+                        <select id="food-category" class="khmer-font w-full bg-zinc-950 border border-zinc-800 text-white rounded-xl px-4 py-2.5 outline-none focus:border-amber-500 transition duration-300">
+                            <option value="food">ម្ហូបអាហារ (Food)</option>
+                            <option value="drink">ភេសជ្ជៈ (Drink)</option>
+                            <option value="dessert">បង្អែម (Dessert)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Image URL Input -->
+                <div>
+                    <label id="lbl-image" class="khmer-font block text-xs text-gray-400 mb-1.5">លីងរូបភាព (Image URL) ឬជ្រើសរើសខាងក្រោម</label>
+                    <input type="text" id="food-image" placeholder="https://example.com/image.jpg" class="w-full bg-zinc-950 border border-zinc-800 text-white rounded-xl px-4 py-2.5 text-xs outline-none focus:border-amber-500 transition duration-300">
+                    
+                    <!-- Pre-selected image recommendations -->
+                    <div class="mt-2">
+                        <span id="preset-label" class="khmer-font text-[10px] text-amber-500/80 mb-1 block">រូបភាពគំរូ និងរហ័ស៖</span>
+                        <div class="grid grid-cols-4 gap-2">
+                            <button type="button" onclick="setImagePreset('lok-lak')" class="p-1 rounded bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 text-[10px] text-gray-400">Lok Lak</button>
+                            <button type="button" onclick="setImagePreset('fried-rice')" class="p-1 rounded bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 text-[10px] text-gray-400">Fried Rice</button>
+                            <button type="button" onclick="setImagePreset('coffee')" class="p-1 rounded bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 text-[10px] text-gray-400">Coffee</button>
+                            <button type="button" onclick="setImagePreset('greentea')" class="p-1 rounded bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 text-[10px] text-gray-400">Green Tea</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Food Description (Khmer) -->
+                <div>
+                    <label id="lbl-desc-kh" class="khmer-font block text-xs text-gray-400 mb-1.5">ការពិពណ៌នាម្ហូប (ភាសាខ្មែរ)</label>
+                    <textarea id="food-desc-kh" rows="2" placeholder="ឧ. សាច់គោទន់ឆ្ងាញ់ ញ៉ាំជាមួយទឹកម្រេចក្រូចឆ្មា" class="khmer-font w-full bg-zinc-950 border border-zinc-800 text-white rounded-xl px-4 py-2.5 outline-none focus:border-amber-500 transition duration-300"></textarea>
+                </div>
+
+                <!-- Food Description (English) -->
+                <div>
+                    <label id="lbl-desc-en" class="khmer-font block text-xs text-gray-400 mb-1.5">ការពិពណ៌នាម្ហូប (English)</label>
+                    <textarea id="food-desc-en" rows="2" placeholder="e.g. Tender beef stir-fried with Kampot pepper" class="w-full bg-zinc-950 border border-zinc-800 text-white rounded-xl px-4 py-2.5 outline-none focus:border-amber-500 transition duration-300"></textarea>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="p-5 border-t border-zinc-800 flex space-x-3 bg-zinc-950">
+                <button type="button" id="form-cancel-btn" onclick="closeFoodFormModal()" class="khmer-font flex-1 bg-zinc-800 hover:bg-zinc-700 text-gray-300 font-semibold py-2.5 rounded-xl transition duration-300">
+                    បោះបង់
+                </button>
+                <button type="button" id="form-save-btn" onclick="saveFoodItem()" class="khmer-font flex-1 bg-amber-500 hover:bg-amber-600 text-black font-bold py-2.5 rounded-xl transition duration-300">
+                    រក្សាទុក
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Delete Confirmation Modal -->
+    <div id="delete-confirm-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl gold-glow animate-fade-in">
+            <div class="p-6 text-center">
+                <div class="w-12 h-12 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-trash-can text-xl"></i>
+                </div>
+                <h3 id="delete-modal-title" class="khmer-font text-lg font-bold text-white mb-2">បញ្ជាក់ការលុប</h3>
+                <p id="delete-modal-desc" class="khmer-font text-gray-400 text-xs mb-6">តើលោកអ្នកប្រាកដជាចង់លុបមុខម្ហូបនេះមែនទេ? សកម្មភាពនេះមិនអាចត្រឡប់ថយក្រោយវិញបានឡើយ。</p>
+                <div class="flex space-x-3">
+                    <button onclick="closeDeleteModal()" id="delete-cancel-btn" class="khmer-font flex-1 bg-zinc-800 hover:bg-zinc-700 text-gray-300 font-semibold py-2.5 rounded-xl transition duration-300">
+                        បោះបង់
+                    </button>
+                    <button onclick="confirmDeleteFoodItem()" id="delete-confirm-btn" class="khmer-font flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl transition duration-300">
+                        លុបចេញ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sliding Cart Panel -->
+    <div id="cart-drawer" class="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-zinc-950 border-l border-zinc-800 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+        <div class="p-5 border-b border-zinc-800 flex justify-between items-center bg-zinc-900">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-basket-shopping text-amber-500 text-lg"></i>
+                <h3 id="cart-title" class="khmer-font text-lg font-bold text-white">កន្ត្រកកម្ម៉ង់របស់អ្នក</h3>
+            </div>
+            <button onclick="toggleCart()" class="text-gray-400 hover:text-white p-1 rounded-full hover:bg-zinc-800"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+
+        <!-- Cart Items List Container -->
+        <div id="cart-items" class="flex-grow p-5 overflow-y-auto space-y-4">
+            <!-- Items added to cart will populate here -->
+        </div>
+
+        <!-- Cart Summary and Checkout -->
+        <div class="p-5 border-t border-zinc-800 bg-zinc-900 space-y-4">
+            <div class="flex justify-between items-center">
+                <span id="cart-subtotal-label" class="khmer-font text-gray-400 font-medium">តម្លៃសរុប (Subtotal):</span>
+                <span id="cart-total" class="text-xl font-bold text-amber-500">$0.00</span>
+            </div>
+            
+            <div class="text-[10px] text-gray-500 bg-black/40 p-2.5 rounded-xl flex items-start gap-2">
+                <i class="fa-solid fa-circle-info text-amber-500 mt-0.5"></i>
+                <p id="checkout-notice" class="khmer-font leading-relaxed">ការចុច "កម្ម៉ង់តាម WhatsApp" នឹងនាំលោកអ្នកទៅកាន់កម្មវិធី WhatsApp ដើម្បីបញ្ជូនបញ្ជីមុខម្ហូបទៅកាន់ហាងដោយស្វ័យប្រវត្ត。</p>
+            </div>
+
+            <button onclick="checkoutToWhatsApp()" class="khmer-font w-full bg-green-600 hover:bg-green-700 active:bg-green-800 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-green-900/10 flex items-center justify-center space-x-2 transition duration-300">
+                <i class="fab fa-whatsapp text-xl"></i>
+                <span id="checkout-btn-text">កម្ម៉ង់តាម WhatsApp ឥឡូវនេះ</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Notification System -->
+    <div id="toast-container" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 space-y-2 pointer-events-none"></div>
+
+    <!-- Dynamic JavaScript Engine -->
+    <script>
+        // Preset Image Library
+        const IMAGE_PRESETS = {
+            'lok-lak': 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=500',
+            'fried-rice': 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&q=80&w=500',
+            'coffee': 'https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&q=80&w=500',
+            'greentea': 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&q=80&w=500',
+            'default': 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=500'
+        };
+
+        // Static translation database (i18n)
+        const i18n = {
+            kh: {
+                welcome: "ស្វាគមន៍មកកាន់",
+                heroDesc: "សូមរីករាយជាមួយជម្រើសមុខម្ហូបដ៏មានឱជារស គុណភាពខ្ពស់ និងអនាម័យ។ លោកអ្នកអាចជ្រើសរើសមុខម្ហូប រួចកម្ម៉ង់តាមរយៈ WhatsApp របស់ហាងយើងខ្ញុំបានភ្លាមៗ!",
+                searchPlaceholder: "ស្វែងរកមុខម្ហូប...",
+                catAll: "ទាំងអស់",
+                catFood: "ម្ហូបអាហារ",
+                catDrink: "ភេសជ្ជៈ",
+                catDessert: "បង្អែម",
+                noItems: "រកមិនឃើញមុខម្ហូបដែលអ្នកស្វែងរកទេ!",
+                addToCart: "ដាក់កន្ត្រក",
+                cartTitle: "កន្ត្រកកម្ម៉ង់របស់អ្នក",
+                cartEmpty: "មិនទាន់មានមុខម្ហូបក្នុងកន្ត្រកនៅឡើយទេ!",
+                subtotal: "តម្លៃសរុប (Subtotal):",
+                checkoutBtn: "កម្ម៉ង់តាម WhatsApp ឥឡូវនេះ",
+                whatsappNotice: "ការចុច \"កម្ម៉ង់តាម WhatsApp\" នឹងនាំលោកអ្នកទៅកាន់កម្មវិធី WhatsApp ដើម្បីបញ្ជូនបញ្ជីមុខម្ហូបទៅកាន់ហាងដោយស្វ័យប្រវត្ត។",
+                adminTitle: "ការគ្រប់គ្រងហាង (Admin Mode)",
+                adminDesc: "សូមបញ្ចូលលេខកូដសម្ងាត់ (PIN) ដើម្បីបន្ថែម ឬកែសម្រួលមេនុយម្ហូប។",
+                cancel: "បោះបង់",
+                verify: "ផ្ទៀងផ្ទាត់",
+                addFoodBtn: "បន្ថែមមុខម្ហូបថ្មី",
+                editFoodTitle: "កែប្រែមុខម្ហូប",
+                addFoodTitle: "បន្ថែមមុខម្ហូបថ្មី",
+                labelNameKh: "ឈ្មោះមុខម្ហូប (ភាសាខ្មែរ) *",
+                labelNameEn: "ឈ្មោះមុខម្ហូប (English) *",
+                labelPrice: "តម្លៃ ($) *",
+                labelCategory: "ប្រភេទម្ហូប *",
+                labelImage: "លីងរូបភាព (Image URL) ឬជ្រើសរើសខាងក្រោម",
+                labelDescKh: "ការពិពណ៌នាម្ហូប (ភាសាខ្មែរ)",
+                labelDescEn: "ការពិពណ៌នាម្ហូប (English)",
+                save: "រក្សាទុក",
+                unit: "១ ចាន/កែវ",
+                placeholderDescKh: "ឧ. សាច់គោទន់ឆ្ងាញ់ ញ៉ាំជាមួយទឹកម្រេចក្រូចឆ្មា",
+                placeholderDescEn: "e.g. Tender beef with Kampot pepper and rice",
+                adminActiveBadge: "លោកអ្នកកំពុងប្រើប្រាស់ក្នុងនាមជា Admin (ម្ចាស់ហាង)",
+                toastNoItemsInCart: "សូមបញ្ចូលមុខម្ហូបទៅកន្ត្រកជាមុនសិន!",
+                toastCheckoutSuccess: "បានផ្ញើការកម្ម៉ង់ទៅ WhatsApp និងបានសម្អាតកន្ត្រករួចរាល់!",
+                toastAdminSuccess: "ចូលត្រួតពិនិត្យដោយជោគជ័យ! (Admin Mode)",
+                toastAdminError: "លេខកូដមិនត្រឹមត្រូវទេ! សូមព្យាយាមម្ដងទៀត។",
+                toastAdminLogout: "បានចាកចេញពី Admin Mode",
+                toastSaveSuccess: "រក្សាទុកមុខម្ហូបដោយជោគជ័យ!",
+                toastDeleteSuccess: "លុបមុខម្ហូបបានជោគជ័យ!",
+                confirmDelete: "តើលោកអ្នកប្រាកដជាចង់លុបមុខម្ហូបនេះមែនទេ? សកម្មភាពនេះមិនអាចត្រឡប់ថយក្រោយវិញបានឡើយ។",
+                presetLabel: "រូបភាពគំរូ និងរហ័ស៖"
+            },
+            en: {
+                welcome: "Welcome to",
+                heroDesc: "Enjoy our delicious, high-quality, and hygienic food selection. Choose your favorite dishes and order instantly via WhatsApp!",
+                searchPlaceholder: "Search dishes...",
+                catAll: "All",
+                catFood: "Foods",
+                catDrink: "Drinks",
+                catDessert: "Desserts",
+                noItems: "No dishes found!",
+                addToCart: "Add to Basket",
+                cartTitle: "Your Order Basket",
+                cartEmpty: "Your basket is empty!",
+                subtotal: "Subtotal:",
+                checkoutBtn: "Order via WhatsApp Now",
+                whatsappNotice: "Clicking \"Order via WhatsApp\" will automatically build and send your order summary to the restaurant.",
+                adminTitle: "Admin Access Panel",
+                adminDesc: "Enter secret PIN to add, modify, or delete menu catalog.",
+                cancel: "Cancel",
+                verify: "Verify PIN",
+                addFoodBtn: "Add New Item",
+                editFoodTitle: "Edit Food Item",
+                addFoodTitle: "Add New Item",
+                labelNameKh: "Dish Name (Khmer) *",
+                labelNameEn: "Dish Name (English) *",
+                labelPrice: "Price ($) *",
+                labelCategory: "Category *",
+                labelImage: "Image URL (or select preset below)",
+                labelDescKh: "Description (Khmer)",
+                labelDescEn: "Description (English)",
+                save: "Save Item",
+                unit: "1 Unit",
+                placeholderDescKh: "ឧ. សាច់គោទន់ឆ្ងាញ់ ញ៉ាំជាមួយទឹកម្រេចក្រូចឆ្មា",
+                placeholderDescEn: "e.g. Tender beef stir-fried with Kampot pepper & rice",
+                adminActiveBadge: "You are operating as Administrator (Merchant)",
+                toastNoItemsInCart: "Please add dishes to your basket first!",
+                toastCheckoutSuccess: "Order dispatched to WhatsApp! Basket cleared.",
+                toastAdminSuccess: "Authorized successfully! (Admin Mode)",
+                toastAdminError: "Incorrect PIN! Please try again.",
+                toastAdminLogout: "Admin mode logged out.",
+                toastSaveSuccess: "Menu item updated successfully!",
+                toastDeleteSuccess: "Menu item deleted successfully!",
+                confirmDelete: "Are you sure you want to delete this menu item? This action cannot be undone.",
+                presetLabel: "Quick Presets:"
+            }
+        };
+
+        // Standard Default Menu Dataset
+        const defaultFoods = [
+            {
+                id: 'food_1',
+                nameKh: 'បាយឆាឡុកឡាក់សាច់គោ',
+                nameEn: 'Beef Lok Lak with Rice',
+                price: 4.50,
+                category: 'food',
+                image: IMAGE_PRESETS['lok-lak'],
+                descKh: 'សាច់គោផុយទន់ល្មើមឆាជាមួយម្រេចកំពត និងបាយឆាក្ដៅៗ ញ៉ាំជាមួយទឹកជ្រលក់ពិសេសរបស់ហាង។',
+                descEn: 'Tender beef stir-fried with Kampot black pepper, served with warm fried rice and special lime sauce.'
+            },
+            {
+                id: 'food_2',
+                nameKh: 'បាយឆាគ្រឿងសមុទ្រ',
+                nameEn: 'Seafood Fried Rice',
+                price: 3.50,
+                category: 'food',
+                image: IMAGE_PRESETS['fried-rice'],
+                descKh: 'បាយឆាគ្រាប់ៗជាមួយបង្គា និងមឹកស្រស់ៗ លាយផ្សំគ្រឿងទេសដ៏ឈ្ងុយឆ្ងាញ់។',
+                descEn: 'Stir-fried jasmine rice with fresh shrimp, squid, green peas, and traditional house seasoning.'
+            },
+            {
+                id: 'drink_1',
+                nameKh: 'កាហ្វេទឹកដោះគោទឹកកក',
+                nameEn: 'Iced Milk Coffee',
+                price: 1.80,
+                category: 'drink',
+                image: IMAGE_PRESETS['coffee'],
+                descKh: 'កាហ្វេឆុងស្រស់ៗ លាយជាមួយទឹកដោះគោខាប់គុណភាពខ្ពស់ ឈ្ងុយឆ្ងាញ់ដិតអារម្មណ៍។',
+                descEn: 'Slow-dripped robusta coffee combined with high-grade sweet condensed milk over ice.'
+            },
+            {
+                id: 'drink_2',
+                nameKh: 'តែបៃតងក្រឡុក',
+                nameEn: 'Matcha Green Tea Frappe',
+                price: 2.50,
+                category: 'drink',
+                image: IMAGE_PRESETS['greentea'],
+                descKh: 'ម្សៅម៉ាត់ឆាជប៉ុនលាយផ្សំជាមួយទឹកដោះគោស្រស់ក្រឡុកត្រជាក់ដល់បេះដូង។',
+                descEn: 'Premium Japanese Matcha blended smooth with sweetened whole milk and fresh cream.'
+            }
+        ];
+
+        // Active States (Client-Side Storage by default so it works 100% on Netlify)
+        window.foods = [];
+        window.cart = []; 
+        window.currentCategory = 'all';
+        window.isAdmin = false;
+        window.searchQuery = '';
+        window.currentLang = 'kh'; 
+        window.itemToDeleteId = null; 
+        const EXCHANGE_RATE = 4000;
+
+        window.onload = function() {
+            // Load from browser database
+            const savedFoods = localStorage.getItem('rm_resto_foods_v2');
+            if (savedFoods) {
+                window.foods = JSON.parse(savedFoods);
+            } else {
+                window.foods = [...defaultFoods];
+                localStorage.setItem('rm_resto_foods_v2', JSON.stringify(window.foods));
+            }
+            applyLanguage();
+        };
+
+        window.toggleLanguage = function(lang) {
+            window.currentLang = lang;
+            applyLanguage();
+            showToast(lang === 'kh' ? "បានប្តូរទៅជាភាសាខ្មែរ 🇰🇭" : "Switched to English 🇺🇸", "info");
+        };
+
+        function applyLanguage() {
+            const t = i18n[window.currentLang];
+            
+            // Text values translations
+            document.getElementById('welcome-text').innerText = t.welcome;
+            document.getElementById('hero-desc').innerText = t.heroDesc;
+            document.getElementById('search-input').placeholder = t.searchPlaceholder;
+            
+            document.getElementById('cat-all').innerText = t.catAll + ' (All)';
+            document.getElementById('cat-food').innerText = t.catFood + ' (Foods)';
+            document.getElementById('cat-drink').innerText = t.catDrink + ' (Drinks)';
+            document.getElementById('cat-dessert').innerText = t.catDessert + ' (Desserts)';
+            
+            document.getElementById('no-items-text').innerText = t.noItems;
+            document.getElementById('cart-title').innerText = t.cartTitle;
+            document.getElementById('cart-subtotal-label').innerText = t.subtotal;
+            document.getElementById('checkout-notice').innerText = t.whatsappNotice;
+            document.getElementById('checkout-btn-text').innerText = t.checkoutBtn;
+            
+            document.getElementById('admin-title-text').innerText = t.adminTitle;
+            document.getElementById('admin-desc-text').innerText = t.adminDesc;
+            document.getElementById('admin-cancel-btn').innerText = t.cancel;
+            document.getElementById('admin-verify-btn').innerText = t.verify;
+            document.getElementById('admin-badge-text').innerText = window.currentLang === 'kh' ? 'ម្ចាស់ហាង' : 'ADMIN';
+            document.getElementById('admin-active-badge-text').innerText = t.adminActiveBadge;
+            document.getElementById('admin-add-new-btn-text').innerText = t.addFoodBtn;
+            
+            document.getElementById('lbl-name-kh').innerText = t.labelNameKh;
+            document.getElementById('lbl-name-en').innerText = t.labelNameEn;
+            document.getElementById('lbl-price').innerText = t.labelPrice;
+            document.getElementById('lbl-category').innerText = t.labelCategory;
+            document.getElementById('lbl-image').innerText = t.labelImage;
+            document.getElementById('lbl-desc-kh').innerText = t.labelDescKh;
+            document.getElementById('lbl-desc-en').innerText = t.labelDescEn;
+            document.getElementById('food-desc-kh').placeholder = t.placeholderDescKh;
+            document.getElementById('food-desc-en').placeholder = t.placeholderDescEn;
+            document.getElementById('form-cancel-btn').innerText = t.cancel;
+            document.getElementById('form-save-btn').innerText = t.save;
+            document.getElementById('preset-label').innerText = t.presetLabel;
+
+            if (window.currentLang === 'kh') {
+                document.getElementById('lang-kh-btn').className = "px-2.5 py-1 text-xs font-bold rounded-lg transition duration-200 bg-amber-500 text-black";
+                document.getElementById('lang-en-btn').className = "px-2.5 py-1 text-xs font-bold rounded-lg transition duration-200 bg-zinc-900 text-gray-400 hover:text-white";
+            } else {
+                document.getElementById('lang-en-btn').className = "px-2.5 py-1 text-xs font-bold rounded-lg transition duration-200 bg-amber-500 text-black";
+                document.getElementById('lang-kh-btn').className = "px-2.5 py-1 text-xs font-bold rounded-lg transition duration-200 bg-zinc-900 text-gray-400 hover:text-white";
+            }
+
+            renderMenu();
+            updateCartUI();
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `khmer-font px-4 py-3 rounded-xl shadow-lg border text-sm font-semibold flex items-center space-x-2 pointer-events-auto transition duration-300 transform translate-y-2 opacity-0`;
+            
+            if (type === 'success') {
+                toast.className += ' bg-zinc-900 border-green-500/30 text-green-400';
+                toast.innerHTML = `<i class="fa-solid fa-circle-check text-green-500"></i> <span>${message}</span>`;
+            } else if (type === 'error') {
+                toast.className += ' bg-zinc-900 border-red-500/30 text-red-400';
+                toast.innerHTML = `<i class="fa-solid fa-circle-exclamation text-red-500"></i> <span>${message}</span>`;
+            } else {
+                toast.className += ' bg-zinc-900 border-amber-500/30 text-amber-500';
+                toast.innerHTML = `<i class="fa-solid fa-circle-info text-amber-500"></i> <span>${message}</span>`;
+            }
+
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 50);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3200);
+        }
+
+        function formatPrice(usdPrice) {
+            if (window.currentLang === 'kh') {
+                const rielPrice = Math.round(usdPrice * EXCHANGE_RATE);
+                return rielPrice.toLocaleString('km-KH') + ' ៛';
+            } else {
+                return '$' + usdPrice.toFixed(2);
+            }
+        }
+
+        window.setCategory = function(category) {
+            window.currentCategory = category;
+            
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.className = "khmer-font px-5 py-2 bg-zinc-900 text-gray-400 hover:text-amber-500 font-semibold text-sm rounded-xl whitespace-nowrap transition duration-300 category-btn";
+            });
+
+            const activeBtn = document.getElementById(`cat-${category}`);
+            if (activeBtn) {
+                activeBtn.className = "khmer-font px-5 py-2 bg-amber-500 text-black font-bold text-sm rounded-xl whitespace-nowrap transition duration-300 category-btn";
+            }
+
+            renderMenu();
+        };
+
+        window.filterMenu = function() {
+            window.searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
+            renderMenu();
+        };
+
+        function renderMenu() {
+            const grid = document.getElementById('food-grid');
+            const emptyState = document.getElementById('no-items-state');
+            grid.innerHTML = '';
+
+            const filtered = window.foods.filter(item => {
+                const matchesCategory = window.currentCategory === 'all' || item.category === window.currentCategory;
+                const nameInKh = (item.nameKh || '').toLowerCase();
+                const nameInEn = (item.nameEn || '').toLowerCase();
+                const matchesSearch = nameInKh.includes(window.searchQuery) || nameInEn.includes(window.searchQuery);
+                return matchesCategory && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+                grid.classList.add('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.classList.remove('hidden');
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-zinc-900/40 border border-zinc-850 hover:border-amber-500/30 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col group relative text-xs animate-fade-in";
+                
+                const displayName = window.currentLang === 'kh' ? item.nameKh : item.nameEn;
+                const secondaryName = window.currentLang === 'kh' ? item.nameEn : item.nameKh;
+                const displayDesc = window.currentLang === 'kh' ? (item.descKh || item.descEn || '') : (item.descEn || item.descKh || '');
+                const displayUnit = i18n[window.currentLang].unit;
+                const displayAddButtonText = i18n[window.currentLang].addToCart;
+
+                card.innerHTML = `
+                    <div class="relative overflow-hidden aspect-[16/10] bg-zinc-950">
+                        <img src="${item.image}" alt="${item.nameEn}" onerror="this.src='https://placehold.co/400x250/18181b/eab308?text=Food'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <span class="absolute top-2 right-2 bg-black/75 backdrop-blur text-amber-500 text-[11px] font-bold px-2 py-1 rounded-lg border border-amber-500/20 shadow-md">
+                            ${formatPrice(item.price)}
+                        </span>
+                        <div class="admin-only-block ${window.isAdmin ? 'flex' : 'hidden'} absolute inset-0 bg-black/70 backdrop-blur-xs flex-col items-center justify-center space-y-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                            <button onclick="openEditFormModal('${item.id}')" class="khmer-font flex items-center space-x-1 bg-amber-500 hover:bg-amber-600 text-black px-2.5 py-1.5 rounded-lg text-[10px] font-bold transition-all">
+                                <i class="fa-solid fa-pen-to-square text-[9px]"></i>
+                                <span>${window.currentLang === 'kh' ? 'កែប្រែ' : 'Edit'}</span>
+                            </button>
+                            <button onclick="deleteFoodItem('${item.id}')" class="khmer-font flex items-center space-x-1 bg-red-600 hover:bg-red-700 text-white px-2.5 py-1.5 rounded-lg text-[10px] font-bold transition-all">
+                                <i class="fa-solid fa-trash-can text-[9px]"></i>
+                                <span>${window.currentLang === 'kh' ? 'លុប' : 'Delete'}</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="p-3 flex-grow flex flex-col justify-between">
+                        <div>
+                            <div class="mb-1">
+                                <h4 class="khmer-font text-xs font-bold text-white group-hover:text-amber-400 transition-colors duration-200 line-clamp-1">${displayName}</h4>
+                                <h5 class="text-[9px] text-gray-500 font-medium truncate">${secondaryName}</h5>
+                            </div>
+                            <p class="khmer-font text-[10px] text-gray-400 leading-relaxed line-clamp-1 mt-0.5 mb-2">${displayDesc || (window.currentLang === 'kh' ? 'មិនទាន់មានការពិពណ៌នាឡើយ' : 'No description provided')}</p>
+                        </div>
+                        
+                        <div class="flex items-center justify-between border-t border-zinc-850 pt-2 mt-auto">
+                            <span class="text-[9px] font-semibold text-gray-500">${displayUnit}</span>
+                            <button onclick="addToCart('${item.id}')" class="khmer-font bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-black font-bold text-[9px] px-2 py-1.5 rounded-lg shadow-sm flex items-center space-x-1 transition duration-300">
+                                <i class="fa-solid fa-plus text-[8px]"></i>
+                                <span>${displayAddButtonText}</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        window.openAdminModal = function() {
+            if (window.isAdmin) {
+                showToast(window.currentLang === 'kh' ? "លោកអ្នកកំពុងប្រើប្រាស់ Admin Mode រួចរាល់ហើយ。" : "Already in Admin Mode.", "info");
+                return;
+            }
+            document.getElementById('admin-pin').value = '';
+            document.getElementById('admin-login-modal').classList.remove('hidden');
+            document.getElementById('admin-pin').focus();
+        };
+
+        window.closeAdminModal = function() {
+            document.getElementById('admin-login-modal').classList.add('hidden');
+        };
+
+        window.verifyAdminPIN = function() {
+            const enteredPIN = document.getElementById('admin-pin').value;
+            if (enteredPIN === '1234') {
+                window.isAdmin = true;
+                
+                document.getElementById('admin-lock-btn').classList.add('hidden');
+                document.getElementById('admin-badge').classList.remove('hidden');
+                document.getElementById('admin-controls').classList.remove('hidden');
+                
+                closeAdminModal();
+                showToast(i18n[window.currentLang].toastAdminSuccess, "success");
+                renderMenu();
+            } else {
+                showToast(i18n[window.currentLang].toastAdminError, "error");
+            }
+        };
+
+        window.logoutAdmin = function() {
+            window.isAdmin = false;
+            document.getElementById('admin-lock-btn').classList.remove('hidden');
+            document.getElementById('admin-badge').classList.add('hidden');
+            document.getElementById('admin-controls').classList.add('hidden');
+            
+            showToast(i18n[window.currentLang].toastAdminLogout, "info");
+            renderMenu();
+        };
+
+        window.openFoodFormModal = function() {
+            document.getElementById('form-modal-title').innerText = i18n[window.currentLang].addFoodTitle;
+            document.getElementById('edit-item-id').value = '';
+            document.getElementById('food-name-kh').value = '';
+            document.getElementById('food-name-en').value = '';
+            document.getElementById('food-price').value = '';
+            document.getElementById('food-category').value = 'food';
+            document.getElementById('food-image').value = '';
+            document.getElementById('food-desc-kh').value = '';
+            document.getElementById('food-desc-en').value = '';
+            document.getElementById('food-form-modal').classList.remove('hidden');
+        };
+
+        window.openEditFormModal = function(id) {
+            const item = window.foods.find(f => f.id === id);
+            if (!item) return;
+
+            document.getElementById('form-modal-title').innerText = i18n[window.currentLang].editFoodTitle;
+            document.getElementById('edit-item-id').value = item.id;
+            document.getElementById('food-name-kh').value = item.nameKh;
+            document.getElementById('food-name-en').value = item.nameEn;
+            document.getElementById('food-price').value = item.price;
+            document.getElementById('food-category').value = item.category;
+            document.getElementById('food-image').value = item.image;
+            document.getElementById('food-desc-kh').value = item.descKh || '';
+            document.getElementById('food-desc-en').value = item.descEn || '';
+            document.getElementById('food-form-modal').classList.remove('hidden');
+        };
+
+        window.closeFoodFormModal = function() {
+            document.getElementById('food-form-modal').classList.add('hidden');
+        };
+
+        window.setImagePreset = function(presetKey) {
+            if (IMAGE_PRESETS[presetKey]) {
+                document.getElementById('food-image').value = IMAGE_PRESETS[presetKey];
+                showToast(window.currentLang === 'kh' ? `បានជ្រើសរើសរូបភាព៖ ${presetKey}` : `Selected preset image: ${presetKey}`, "info");
+            }
+        };
+
+        window.saveFoodItem = function() {
+            const id = document.getElementById('edit-item-id').value;
+            const nameKh = document.getElementById('food-name-kh').value.trim();
+            const nameEn = document.getElementById('food-name-en').value.trim();
+            const price = parseFloat(document.getElementById('food-price').value);
+            const category = document.getElementById('food-category').value;
+            let image = document.getElementById('food-image').value.trim();
+            const descKh = document.getElementById('food-desc-kh').value.trim();
+            const descEn = document.getElementById('food-desc-en').value.trim();
+
+            if (!nameKh || !nameEn || isNaN(price) || price <= 0) {
+                showToast(window.currentLang === 'kh' ? "សូមបំពេញព័ត៌មានសំខាន់ៗឱ្យបានគ្រប់គ្រាន់!" : "Please fill in all required fields properly!", "error");
+                return;
+            }
+
+            if (!image) {
+                image = IMAGE_PRESETS['default'];
+            }
+
+            const payload = { id: id || 'food_' + Date.now(), nameKh, nameEn, price, category, image, descKh, descEn };
+
+            if (id) {
+                // Update local storage arrays
+                const idx = window.foods.findIndex(f => f.id === id);
+                if (idx !== -1) {
+                    window.foods[idx] = payload;
+                }
+            } else {
+                // Insert new dish locally
+                window.foods.unshift(payload);
+            }
+
+            localStorage.setItem('rm_resto_foods_v2', JSON.stringify(window.foods));
+            renderMenu();
+            updateCartUI();
+            
+            closeFoodFormModal();
+            showToast(i18n[window.currentLang].toastSaveSuccess, "success");
+        };
+
+        window.deleteFoodItem = function(id) {
+            window.itemToDeleteId = id;
+            const t = i18n[window.currentLang];
+            
+            document.getElementById('delete-modal-title').innerText = window.currentLang === 'kh' ? 'បញ្ជាក់ការលុប' : 'Confirm Deletion';
+            document.getElementById('delete-modal-desc').innerText = t.confirmDelete;
+            document.getElementById('delete-cancel-btn').innerText = t.cancel;
+            document.getElementById('delete-confirm-btn').innerText = window.currentLang === 'kh' ? 'លុបចេញ' : 'Delete';
+            
+            document.getElementById('delete-confirm-modal').classList.remove('hidden');
+        };
+
+        window.closeDeleteModal = function() {
+            document.getElementById('delete-confirm-modal').classList.add('hidden');
+            window.itemToDeleteId = null;
+        };
+
+        window.confirmDeleteFoodItem = function() {
+            if (window.itemToDeleteId) {
+                window.foods = window.foods.filter(f => f.id !== window.itemToDeleteId);
+                localStorage.setItem('rm_resto_foods_v2', JSON.stringify(window.foods));
+
+                window.cart = window.cart.filter(c => c.id !== window.itemToDeleteId);
+                
+                renderMenu();
+                updateCartUI();
+
+                showToast(i18n[window.currentLang].toastDeleteSuccess, "success");
+            }
+            closeDeleteModal();
+        };
+
+        window.toggleCart = function() {
+            const drawer = document.getElementById('cart-drawer');
+            drawer.classList.toggle('translate-x-full');
+        };
+
+        window.addToCart = function(itemId) {
+            const existing = window.cart.find(c => c.id === itemId);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                window.cart.push({ id: itemId, quantity: 1 });
+            }
+
+            updateCartUI();
+            
+            const foodItem = window.foods.find(f => f.id === itemId);
+            if (foodItem) {
+                const itemName = window.currentLang === 'kh' ? foodItem.nameKh : foodItem.nameEn;
+                showToast(window.currentLang === 'kh' ? `បានបញ្ចូល ${itemName} ទៅក្នុងកន្ត្រក។` : `Added ${itemName} to your basket.`, "success");
+            }
+        };
+
+        window.updateQuantity = function(itemId, amount) {
+            const item = window.cart.find(c => c.id === itemId);
+            if (!item) return;
+
+            item.quantity += amount;
+            if (item.quantity <= 0) {
+                window.cart = window.cart.filter(c => c.id !== itemId);
+            }
+            updateCartUI();
+        };
+
+        function updateCartUI() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const cartCount = document.getElementById('cart-count');
+            const cartTotal = document.getElementById('cart-total');
+
+            cartItemsContainer.innerHTML = '';
+
+            let total = 0;
+            let count = 0;
+
+            if (window.cart.length === 0) {
+                cartItemsContainer.innerHTML = `
+                    <div class="h-60 flex flex-col items-center justify-center text-center animate-fade-in">
+                        <i class="fa-solid fa-basket-shopping text-gray-700 text-4xl mb-3"></i>
+                        <p class="khmer-font text-gray-400 text-sm">${i18n[window.currentLang].cartEmpty}</p>
+                    </div>
+                `;
+            } else {
+                window.cart.forEach(cartItem => {
+                    const item = window.foods.find(f => f.id === cartItem.id);
+                    if (!item) return;
+
+                    const itemSubtotal = item.price * cartItem.quantity;
+                    total += itemSubtotal;
+                    count += cartItem.quantity;
+
+                    const displayName = window.currentLang === 'kh' ? item.nameKh : item.nameEn;
+
+                    const div = document.createElement('div');
+                    div.className = "flex justify-between items-center bg-zinc-900 border border-zinc-850 p-4 rounded-xl animate-fade-in";
+                    div.innerHTML = `
+                        <div class="space-y-1 pr-2">
+                            <h5 class="khmer-font text-xs font-bold text-white line-clamp-1">${displayName}</h5>
+                            <span class="text-xs text-amber-500 font-semibold">${formatPrice(item.price)}</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="flex items-center space-x-2 bg-zinc-950 px-2 py-1.5 rounded-lg border border-zinc-850">
+                                <button onclick="updateQuantity('${item.id}', -1)" class="text-gray-400 hover:text-red-500 w-5 h-5 flex items-center justify-center text-sm font-bold"><i class="fa-solid fa-minus text-[10px]"></i></button>
+                                <span class="text-xs text-white font-bold w-4 text-center">${cartItem.quantity}</span>
+                                <button onclick="updateQuantity('${item.id}', 1)" class="text-gray-400 hover:text-green-500 w-5 h-5 flex items-center justify-center text-sm font-bold"><i class="fa-solid fa-plus text-[10px]"></i></button>
+                            </div>
+                            <span class="text-xs font-bold text-white w-16 text-right">${formatPrice(itemSubtotal)}</span>
+                        </div>
+                    `;
+                    cartItemsContainer.appendChild(div);
+                });
+            }
+
+            cartTotal.innerText = formatPrice(total);
+            
+            if (count > 0) {
+                cartCount.innerText = count;
+                cartCount.classList.remove('hidden');
+            } else {
+                cartCount.classList.add('hidden');
+            }
+        }
+
+        window.checkoutToWhatsApp = function() {
+            if (window.cart.length === 0) {
+                showToast(i18n[window.currentLang].toastNoItemsInCart, "error");
+                return;
+            }
+
+            let message = window.currentLang === 'kh' 
+                ? "សួស្ដី RM HENG RESTO! ខ្ញុំចង់កម្ម៉ង់ម្ហូបដូចខាងក្រោម៖\n"
+                : "Hello RM HENG RESTO! I would like to order the following:\n";
+            
+            message += "=============================\n";
+            
+            let total = 0;
+            window.cart.forEach((cartItem, index) => {
+                const item = window.foods.find(f => f.id === cartItem.id);
+                if (!item) return;
+
+                const usdSubtotal = item.price * cartItem.quantity;
+                total += usdSubtotal;
+
+                const displayName = window.currentLang === 'kh' ? item.nameKh : item.nameEn;
+                const formattedSubtotal = formatPrice(usdSubtotal);
+
+                message += `${index + 1}. ${displayName} x ${cartItem.quantity} = ${formattedSubtotal}\n`;
+            });
+            
+            message += "=============================\n";
+            message += window.currentLang === 'kh' 
+                ? `សរុបទាំងអស់ (Total): ${formatPrice(total)}\n\n`
+                : `Total Sum: ${formatPrice(total)}\n\n`;
+            
+            message += window.currentLang === 'kh'
+                ? "សូមអរគុណ! (ផ្ញើចេញពីទំព័រមេនុយឌីជីថល)"
+                : "Thank you! (Sent via digital menu website)";
+
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappURL = `https://wa.me/85590878980?text=${encodedMessage}`;
+            
+            window.open(whatsappURL, '_blank');
+
+            window.cart = [];
+            updateCartUI();
+            
+            toggleCart();
+            showToast(i18n[window.currentLang].toastCheckoutSuccess, "success");
+        };
+    </script>
+</body>
+</html>
