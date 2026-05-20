@@ -142,7 +142,28 @@
 
         // ២. ដំណើរការនៅពេលបើកវ៉ិបសាយ (Real-time Listener)
         window.onload = function() {
+            // ទាញទិន្នន័យពី Firebase Realtime Database មកបង្ហាញផ្ទាល់ (Realtime Sync)
+            foodsRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    // បំប្លែងទិន្នន័យពី Object ទៅជា Array ដើម្បីងាយស្រួលបង្ហាញលើរចនាសម្ព័ន្ធបណ្ដាញ
+                    window.foods = Object.keys(data).map(key => ({
+                        id: key,
+                        ...data[key]
+                    }));
+                } else {
+                    // បើអត់ទាន់មានទិន្នន័យសោះ ឱ្យវាទាញយកទិន្នន័យគំរូដំបូងមកប្រើ
+                    window.foods = [...defaultFoods];
+                    defaultFoods.forEach(item => {
+                        foodsRef.child(item.id).set(item);
+                    });
+                }
+                renderMenu();
+                updateCartUI();
+            });
+
             applyLanguage();
+        };
             
             // ស្តាប់ការផ្លាស់ប្តូរទិន្នន័យពី Firebase (Syncs in Real-time)
             foodsRef.on('value', (snapshot) => {
@@ -180,10 +201,18 @@
 
             if (!image) image = IMAGE_PRESETS['default'];
 
-            const payload = { 
-                id: id || 'food_' + Date.now(), 
-                nameKh, nameEn, price, category, image, descKh, descEn 
-            };
+           const itemId = id || 'food_' + Date.now();
+            payload.id = itemId;
+
+            // បញ្ជូនទៅរក្សាទុកក្នុង Firebase Cloud
+            foodsRef.child(itemId).set(payload)
+                .then(() => {
+                    closeFoodFormModal();
+                    showToast(i18n[window.currentLang].toastSaveSuccess, "success");
+                })
+                .catch((error) => {
+                    showToast("Error: " + error.message, "error");
+                });
 
             let updatedFoods = [...window.foods];
 
@@ -204,16 +233,20 @@
         };
 
         // ៤. កែសម្រួលមុខងារលុប (Delete)
-        window.confirmDeleteFoodItem = function() {
+       window.confirmDeleteFoodItem = function() {
             if (window.itemToDeleteId) {
-                const updatedFoods = window.foods.filter(f => f.id !== window.itemToDeleteId);
-                
-                // ផ្ញើទិន្នន័យដែលលុបរួចទៅ Firebase
-                foodsRef.set(updatedFoods).then(() => {
-                    window.cart = window.cart.filter(c => c.id !== window.itemToDeleteId);
-                    showToast("លុបមុខម្ហូបបានជោគជ័យ!", "success");
-                    closeDeleteModal();
-                });
+                // លុបចេញពី Firebase Realtime Database
+                foodsRef.child(window.itemToDeleteId).remove()
+                    .then(() => {
+                        window.cart = window.cart.filter(c => c.id !== window.itemToDeleteId);
+                        showToast(i18n[window.currentLang].toastDeleteSuccess, "success");
+                        closeDeleteModal();
+                    })
+                    .catch((error) => {
+                        showToast("Error: " + error.message, "error");
+                    });
+            } else {
+                closeDeleteModal();
             }
         };
 
