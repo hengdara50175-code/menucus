@@ -101,18 +101,19 @@
     </main>
 
     <div id="toast-container" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 space-y-2 pointer-events-none"></div>
-
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
         // ១. ដាក់បញ្ចូល Firebase Configuration របស់អ្នកនៅទីនេះ
         // បន្ទាប់ពីបង្កើត Project ក្នុង Firebase វានឹងផ្តល់កូដនេះឱ្យអ្នក
         const firebaseConfig = {
-            apiKey: "សូម_ដាក់_API_KEY_របស់អ្នកនៅទីនេះ",
-            authDomain: "ឈ្មោះ_PROJECT_របស់អ្នក.firebaseapp.com",
-            databaseURL: "https://ឈ្មោះ_PROJECT_របស់អ្នក-default-rtdb.firebaseio.com",
-            projectId: "ឈ្មោះ_PROJECT_របស់អ្នក",
-            storageBucket: "ឈ្មោះ_PROJECT_របស់អ្នក.appspot.com",
-            messagingSenderId: "លេខ_SENDER_ID",
-            appId: "លេខ_APP_ID"
+            apiKey: "AIzaSyBia1BXZ7HiMoATQvksXbPd9nCa7POOC4Y",
+            authDomain: "rm-heng-resto.firebaseapp.com",
+            databaseURL: "https://console.firebase.google.com/project/rm-heng-resto/database/rm-heng-resto-default-rtdb/data/~2F",
+            projectId: "rm-heng-resto",
+            storageBucket: "rm-heng-resto.firebasestorage.app",
+            messagingSenderId: "303873483171",
+            appId: "1:303873483171:web:877cace0511c4b2039fa16"
         };
 
         // Initialize Firebase
